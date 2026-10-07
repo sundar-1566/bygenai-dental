@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AI Front Desk for Dental Practices | BYgenAI</title>
+<meta name="description" content="An AI receptionist that answers after-hours and missed calls for dental practices, completes patient intake and hands your front desk a ready-to-confirm appointment request.">
+<link rel="canonical" href="https://dental.bygenai.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="It's 7:42 PM. You're closed. A new implant patient is calling.">
+<meta property="og:description" content="See an AI receptionist take an after-hours dental call from greeting to a ready-to-confirm request.">
+<meta property="og:url" content="https://dental.bygenai.com/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d141a'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='15' fill='%23fff' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Brand tokens match bygenai.com: Outfit headings, Inter body, navy ink, slate secondary, blue accent. */
+:root{
+  --paper:#F5F7FA; --surface:#FFFFFF; --ink:#0D141A; --muted:#4A5868; --slate:#3A506B; --line:#E0E5EB;
+  --accent:#0E4BE6; --accent-ink:#FFFFFF; --accent-soft:#E4ECFD;
+  --signal:#B4410F; --signal-soft:#FBE7DC;
+  --display:"Outfit", "Avenir Next", system-ui, sans-serif;
+  --body:"Inter", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r:12px;
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1rem/1.6 var(--body);-webkit-font-smoothing:antialiased;padding:0 16px 64px}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1;color:var(--ink)}
+h1{font-size:clamp(2.1rem,5vw,3.5rem);font-weight:700;letter-spacing:-.025em}
+h2{font-size:clamp(1.55rem,3.2vw,2.25rem);font-weight:600;letter-spacing:-.015em}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.eyebrow{font:500 .75rem/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:1.15rem;color:var(--muted);max-width:60ch}
+section{padding-block:72px;border-top:1px solid var(--line);display:grid;gap:28px}
+.sec-head{display:grid;gap:12px;max-width:62ch}
+
+/* site header, mirrors bygenai.com nav */
+.site{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:18px;flex-wrap:wrap}
+.logo{font:700 1.25rem var(--display);letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+.logo span{color:var(--accent)}
+.nav{display:flex;gap:4px 22px;align-items:center;flex-wrap:wrap}
+.nav a{color:var(--ink);text-decoration:none;font-weight:500;font-size:.95rem}
+.nav a:hover,.nav a[aria-current]{color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 .95rem var(--body);border-radius:8px;padding:12px 20px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer;text-decoration:none;transition:filter .15s,transform .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn.sm{padding:9px 16px;font-size:.9rem}
+@media (max-width:560px){.nav .btn.sm{display:none}}
+.btn.ghost{background:transparent;color:var(--accent)}
+
+/* hero */
+.hero{display:grid;gap:36px;padding-block:40px 64px}
+.hero-copy{display:grid;gap:18px;max-width:64ch}
+.hero-copy .actions{margin-top:6px}
+.stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.stage{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);min-width:0;box-shadow:0 1px 2px rgb(13 20 26/.04),0 8px 24px -12px rgb(13 20 26/.12)}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.live{display:inline-flex;align-items:center;gap:8px;font:500 .8rem var(--mono);color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--slate)}
+.playing .dot{background:#E5484D;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.controls{display:flex;gap:8px}
+.controls button{font:500 .8rem var(--mono);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.controls button:hover{border-color:var(--accent);color:var(--accent)}
+.log{list-style:none;margin:0;padding:16px 18px;display:grid;gap:12px;min-height:440px;align-content:start}
+.msg{display:grid;grid-template-columns:4.4rem minmax(0,1fr);gap:10px;align-items:baseline}
+.msg time{font:400 .72rem var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.msg .who{font:500 .68rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+.msg.ai .who{color:var(--accent)}
+.msg p{font-size:.96rem}
+.msg.enter{animation:rise .35s ease-out}
+@keyframes rise{from{opacity:.2;transform:translateY(6px)}}
+
+/* intake slip */
+.slip{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+.slip dl{margin:0;padding:6px 18px 4px}
+.row{display:grid;grid-template-columns:7.6rem minmax(0,1fr);gap:12px;padding-block:10px;border-bottom:1px dashed var(--line)}
+.row:last-child{border-bottom:0}
+.row dt{font:500 .7rem/1.7 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.row dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.row dd.empty{color:var(--muted);font-weight:400}
+.row.flash dd{animation:flash .9s ease-out}
+@keyframes flash{from{background:var(--accent-soft)}}
+.status{margin:6px 18px 18px;padding:12px 14px;border-radius:8px;background:var(--accent-soft);display:grid;gap:4px}
+.status b{font-family:var(--display);font-weight:600}
+.status small{color:var(--muted);font-size:.85rem}
+.status.waiting{background:transparent;border:1px dashed var(--line)}
+.pill{display:inline-block;font:500 .68rem var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);justify-self:start}
+.pill.urgent{background:var(--signal-soft);color:var(--signal)}
+.note{font-size:.85rem;color:var(--muted)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;counter-reset:s}
+@media (max-width:860px){.steps{grid-template-columns:1fr}}
+.step{display:grid;gap:8px;align-content:start;padding-top:18px;border-top:2px solid var(--ink)}
+.step::before{counter-increment:s;content:"Step " counter(s);font:500 .75rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.step p{color:var(--muted)}
+
+/* handoff messages */
+.handoff{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.handoff{grid-template-columns:1fr}}
+.sms{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:10px}
+.sms header{display:flex;justify-content:space-between;gap:8px;font:500 .75rem var(--mono);color:var(--muted);flex-wrap:wrap}
+.sms pre{margin:0;white-space:pre-wrap;font:400 .88rem/1.6 var(--mono);overflow-wrap:anywhere;color:var(--ink)}
+.sms.urgent{border-color:var(--signal)}
+.reply{justify-self:end;background:var(--accent);color:var(--accent-ink);border-radius:14px 14px 4px 14px;padding:6px 14px;font-weight:600}
+
+/* scenarios */
+.cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:720px){.cases{grid-template-columns:1fr}}
+.case{display:grid;gap:10px;align-content:start;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.case blockquote{margin:0;font:500 1.12rem/1.4 var(--display)}
+.case .out{font-size:.93rem;color:var(--muted)}
+.case .out b{color:var(--ink);font-weight:600}
+
+/* fit list */
+.fit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 40px;list-style:none;margin:0;padding:0}
+@media (max-width:720px){.fit{grid-template-columns:1fr}}
+.fit li{display:grid;gap:4px;padding-block:14px;border-bottom:1px solid var(--line)}
+.fit li b{font-family:var(--display);font-weight:600;font-size:1.05rem}
+.fit li span{color:var(--muted)}
+
+/* cta, same dark navy band as bygenai.com footer */
+.cta{background:#0D141A;color:#fff;border-radius:16px;padding:44px clamp(20px,5vw,56px);display:grid;gap:16px;border-top:0;margin-top:24px}
+.cta h2{color:#fff}
+.cta p{color:#B8C0CC;max-width:60ch}
+.cta .btn{background:#0E4BE6;border-color:#0E4BE6;color:#fff}
+.actions{display:flex;gap:12px 16px;flex-wrap:wrap;align-items:center}
+.actions span{font-size:.92rem;color:var(--muted)}
+.cta .actions span{color:#B8C0CC}
+.mail{color:inherit;font-weight:600}
+.copy{font:500 .78rem var(--mono);background:transparent;color:inherit;border:1px solid color-mix(in srgb,currentColor 35%,transparent);border-radius:999px;padding:6px 12px;cursor:pointer}
+.copy:hover{border-color:currentColor}
+.cta .copy{color:#fff}
+footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:32px;font-size:.85rem;color:var(--muted)}
+footer a{color:inherit}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="logo" href="https://bygenai.com/">BYgen<span>AI</span></a>
+    <nav class="nav" aria-label="BYgenAI">
+      <a href="https://bygenai.com/">Home</a>
+      <a href="https://bygenai.com/franchise-ai">Franchise AI</a>
+      <a href="https://dental.bygenai.com/" aria-current="page">Dental AI</a>
+      <a href="https://bygenai.com/contact">Contact</a>
+      <a class="btn sm" href="#talk">Book a demo</a>
+    </nav>
+  </header>
+
+  <main>
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">AI front desk for dental practices</p>
+      <h1>It's 7:42 PM. You're closed. A new implant patient is calling.</h1>
+      <p class="lede">Most practices send this call to voicemail, and the patient books somewhere else. Here is the same call answered by an AI receptionist: intake done, a time chosen, and a ready-to-confirm request waiting for your front desk in the morning.</p>
+      <div class="actions">
+        <a class="btn" href="https://calendar.app.google/TpycVaDGRZW1dRYU6" target="_blank" rel="noopener">Book a 20-minute call</a>
+        <a class="btn ghost" href="#stage">Watch the call</a>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="panel">
+        <div class="panel-head">
+          <span class="live"><span class="dot"></span><span id="clock">Call ended · 1 min 24 s</span></span>
+          <div class="controls">
+            <button type="button" id="play">▶ Replay the call</button>
+            <button type="button" id="skip" hidden>Skip to end</button>
+          </div>
+        </div>
+        <ol class="log" id="log" aria-live="polite"></ol>
+      </div>
+
+      <aside class="panel slip" aria-label="Intake slip for the front desk">
+        <div class="panel-head">
+          <h3>Intake slip</h3>
+          <span class="pill">New patient</span>
+        </div>
+        <dl id="slip"></dl>
+        <div class="status" id="status">
+          <b id="status-title">Ready for your front desk</b>
+          <small id="status-sub"></small>
+        </div>
+      </aside>
+    </div>
+    <p class="note">Example call. The practice, caller and times are made up for this demo.</p>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">What happens to that call</p>
+      <h2>Your front desk still makes every booking. They just start with the work done.</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>The caller picks a real open time</h3><p>The receptionist reads your schedule, offers times that fit the visit type, and records the one the caller chooses. It never double-books, because it never writes to your schedule.</p></div>
+      <div class="step"><h3>Your team gets a finished request</h3><p>Name, callback number, new or returning, reason, insurance and the chosen time arrive by text and email, plus a short summary of the call.</p></div>
+      <div class="step"><h3>One person confirms it</h3><p>Your coordinator enters the appointment in your practice software and texts the patient. What used to be a callback and five questions takes about a minute.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">What lands on your team's phone</p>
+      <h2>Two kinds of message, so nothing urgent waits until morning.</h2>
+    </div>
+    <div class="handoff">
+      <div class="sms">
+        <header><span>New request · 7:44 PM</span><span class="pill">Routine</span></header>
+<pre>New patient: Jordan Ellis
+Callback: (555) 014-2283
+Reason: implant consult, missing lower tooth
+Insurance: PPO through employer
+Pain/swelling: none
+Requested: Thu 2:00 PM (offered Tue 9:30 AM, Thu 2:00 PM)
+Action: confirm in schedule, text patient</pre>
+      </div>
+      <div class="sms urgent">
+        <header><span>Urgent · 9:18 PM</span><span class="pill urgent">Swelling</span></header>
+<pre>Returning patient: Sam Ortiz
+Callback: (555) 019-7740
+Swelling on lower left jaw since this afternoon, getting worse.
+Reply YES to be connected now.
+No reply in 5 min: caller is told the on-call dentist will call back.</pre>
+        <span class="reply">YES</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Calls it handles every day</p>
+      <h2>Same receptionist, four very different calls.</h2>
+    </div>
+    <div class="cases">
+      <article class="case">
+        <span class="pill">Reschedule</span>
+        <blockquote>"I can't make my cleaning Friday. Is there anything next week?"</blockquote>
+        <p class="out"><b>Front desk gets:</b> the existing visit, two compatible openings the patient accepted, and which one they prefer.</p>
+      </article>
+      <article class="case">
+        <span class="pill">Returning caller</span>
+        <blockquote>"Hi, I called on Monday about whitening."</blockquote>
+        <p class="out"><b>It remembers:</b> the earlier request went to the office on Monday. It says so plainly, adds today's details to the same request and never promises what staff haven't confirmed.</p>
+      </article>
+      <article class="case">
+        <span class="pill urgent">Urgent</span>
+        <blockquote>"My crown came off and it really hurts."</blockquote>
+        <p class="out"><b>It escalates:</b> asks about pain and swelling, texts the on-call phone right away and tells the caller exactly what happens next.</p>
+      </article>
+      <article class="case">
+        <span class="pill">Questions</span>
+        <blockquote>"Do you take my insurance, and are you open Saturdays?"</blockquote>
+        <p class="out"><b>It answers</b> from your own office details, including holiday closures you post, then offers to set up a visit.</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">How it fits your office</p>
+      <h2>Nothing about your phones or software has to change.</h2>
+    </div>
+    <ul class="fit">
+      <li><b>Keep your number</b><span>Your phones ring first as usual. Missed and after-hours calls roll to the receptionist.</span></li>
+      <li><b>Works with your practice software</b><span>It reads open times from your existing schedule, including systems without an API.</span></li>
+      <li><b>Your staff stay in control</b><span>Every booking, cancellation and reschedule still goes through a person.</span></li>
+      <li><b>Your voice, your rules</b><span>Greeting, visit types, insurance answers and closures are set by your office and change the same day.</span></li>
+      <li><b>Typically live in about four weeks</b><span>Call answering and intake come first, then schedule-aware time offers. We set the exact timeline with you once we know your setup.</span></li>
+      <li><b>Every call reviewed</b><span>Calls are summarized and checked so the receptionist improves from your real conversations.</span></li>
+    </ul>
+  </section>
+
+  <section class="cta" id="talk">
+    <h2>See it with your own visit types and hours.</h2>
+    <p>We'll set up a version of this demo for your practice: your greeting, your schedule rules, your common calls. Then we'll send a one-page proposal with pricing and a launch date.</p>
+    <div class="actions">
+      <a class="btn" href="https://calendar.app.google/TpycVaDGRZW1dRYU6" target="_blank" rel="noopener">Book a 20-minute call</a>
+      <span>or email <a class="mail" href="mailto:info@bygenai.com?subject=Proposal%20request%3A%20AI%20front%20desk">info@bygenai.com</a></span>
+      <button type="button" class="copy">Copy address</button>
+    </div>
+  </section>
+  </main>
+
+  <footer>
+    <span>© <span id="yr">2026</span> BYgenAI · Powering small and midsize businesses through AI.</span>
+    <span>All names, numbers and times on this page are fictional. <a href="https://bygenai.com/">bygenai.com</a></span>
+  </footer>
+</div>
+
+<script>
+const script = [
+  {w:"ai", t:"7:42:05", x:"Thanks for calling Lakeside Family Dental. The office is closed right now, but I can help. What can I do for you?"},
+  {w:"caller", t:"7:42:14", x:"Hi, I lost a tooth a while back and I want to ask about an implant.", s:{reason:"Implant consult"}},
+  {w:"ai", t:"7:42:20", x:"I can set that up. Have you been to Lakeside before?"},
+  {w:"caller", t:"7:42:24", x:"No, first time.", s:{type:"New patient"}},
+  {w:"ai", t:"7:42:27", x:"Welcome. Can I get your first and last name?"},
+  {w:"caller", t:"7:42:31", x:"Jordan Ellis.", s:{name:"Jordan Ellis"}},
+  {w:"ai", t:"7:42:35", x:"Thanks, Jordan. Is the number you're calling from the best way to reach you?"},
+  {w:"caller", t:"7:42:39", x:"Yes, that's my cell.", s:{phone:"(555) 014-2283"}},
+  {w:"ai", t:"7:42:43", x:"Are you in any pain, or is there swelling right now?"},
+  {w:"caller", t:"7:42:48", x:"No, it's not urgent.", s:{urgency:"Routine, no pain"}},
+  {w:"ai", t:"7:42:52", x:"Do you have dental insurance?"},
+  {w:"caller", t:"7:42:57", x:"Yes, a PPO through work.", s:{ins:"PPO through employer"}},
+  {w:"ai", t:"7:43:04", x:"For a new patient implant consult, I have Tuesday at 9:30 AM or Thursday at 2:00 PM. Does either work?", s:{offered:"Tue 9:30 AM · Thu 2:00 PM"}},
+  {w:"caller", t:"7:43:12", x:"Thursday at 2 is perfect.", s:{time:"Thu 2:00 PM"}},
+  {w:"ai", t:"7:43:18", x:"Great. I've sent Thursday at 2:00 PM to our front desk as your requested time. They'll text you to confirm tomorrow morning. Anything else I can help with?"},
+  {w:"caller", t:"7:43:29", x:"No, that's great. Thanks!", end:true},
+];
+const fields = [["reason","Reason"],["type","Patient"],["name","Name"],["phone","Callback"],["urgency","Urgency"],["ins","Insurance"],["offered","Offered"],["time","Chosen time"]];
+const finalVals = Object.assign({}, ...script.filter(m=>m.s).map(m=>m.s));
+const $ = id => document.getElementById(id);
+const stage = $("stage"), log = $("log"), slip = $("slip");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let timers = [];
+
+function renderSlip(vals, flashKey){
+  slip.innerHTML = fields.map(([k,label]) => {
+    const v = vals[k];
+    return `<div class="row${k===flashKey?" flash":""}"><dt>${label}</dt><dd class="${v?"":"empty"}">${v||"listening…"}</dd></div>`;
+  }).join("");
+}
+function addMsg(m, animate){
+  const li = document.createElement("li");
+  li.className = `msg ${m.w}${animate?" enter":""}`;
+  li.innerHTML = `<time>${m.t}</time><div><span class="who">${m.w==="ai"?"AI receptionist":"Caller"}</span><p></p></div>`;
+  li.querySelector("p").textContent = m.x;
+  log.appendChild(li);
+}
+function setStatus(done){
+  $("status").classList.toggle("waiting", !done);
+  $("status-title").textContent = done ? "Ready for your front desk" : "Intake in progress";
+  $("status-sub").textContent = done ? "Thursday 2:00 PM is held as the caller's choice. Your team confirms it in your practice software." : "Fields fill in as the caller answers.";
+}
+function showEnd(){
+  timers.forEach(clearTimeout); timers = [];
+  log.innerHTML = ""; script.forEach(m=>addMsg(m,false));
+  renderSlip(finalVals); setStatus(true);
+  stage.classList.remove("playing");
+  $("clock").textContent = "Call ended · 1 min 24 s";
+  $("play").textContent = "▶ Replay the call"; $("skip").hidden = true;
+}
+function play(){
+  if (reduced){ showEnd(); return; }
+  timers.forEach(clearTimeout); timers = [];
+  log.innerHTML = ""; const vals = {}; renderSlip(vals); setStatus(false);
+  stage.classList.add("playing");
+  $("play").textContent = "↺ Restart"; $("skip").hidden = false;
+  let at = 300;
+  script.forEach(m => {
+    timers.push(setTimeout(() => {
+      addMsg(m,true);
+      $("clock").textContent = "Live · " + m.t + " PM";
+      if (m.s){ Object.assign(vals,m.s); renderSlip(vals, Object.keys(m.s)[0]); }
+      if (m.end) timers.push(setTimeout(showEnd, 1400));
+    }, at));
+    at += Math.min(4200, 900 + m.x.length * 28);
+  });
+}
+$("play").addEventListener("click", play);
+$("skip").addEventListener("click", showEnd);
+document.querySelectorAll(".copy").forEach(btn => btn.addEventListener("click", e => {
+  const b = e.currentTarget;
+  const done = () => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy address", 1800); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents(b.parentElement.querySelector(".mail"));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "Press Ctrl/⌘+C";
+  };
+  try { navigator.clipboard.writeText("info@bygenai.com").then(done, fallback); } catch { fallback(); }
+}));
+$("yr").textContent = new Date().getFullYear();
+
+// Start with the finished call visible; play it once the first time the demo scrolls into view.
+showEnd();
+if (!reduced && "IntersectionObserver" in window){
+  const io = new IntersectionObserver(entries => {
+    if (entries.some(e => e.isIntersecting)){ io.disconnect(); play(); }
+  }, {threshold:.45});
+  io.observe(stage);
+}
+</script>
+</body>
+</html>
