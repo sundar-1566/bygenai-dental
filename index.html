@@ -123,10 +123,16 @@ section{padding-block:72px;border-top:1px solid var(--line);display:grid;gap:28p
 .case .out{font-size:.93rem;color:var(--muted)}
 .case .out b{color:var(--ink);font-weight:600}
 
+/* privacy callout */
+.privacy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 16px;align-items:start;padding:20px 22px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:var(--r)}
+.privacy svg{grid-row:span 2;width:28px;height:28px;color:var(--accent);margin-top:2px}
+.privacy b{font-family:var(--display);font-weight:600;font-size:1.1rem}
+.privacy p{color:var(--muted);max-width:75ch}
+
 /* fit list */
 .fit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 40px;list-style:none;margin:0;padding:0}
 @media (max-width:720px){.fit{grid-template-columns:1fr}}
-.fit li{display:grid;gap:4px;padding-block:14px;border-bottom:1px solid var(--line)}
+.fit li{display:grid;gap:4px;align-content:start;padding-block:14px;border-bottom:1px solid var(--line)}
 .fit li b{font-family:var(--display);font-weight:600;font-size:1.05rem}
 .fit li span{color:var(--muted)}
 
@@ -273,6 +279,11 @@ No reply in 5 min: caller is told the on-call dentist will call back.</pre>
     <div class="sec-head">
       <p class="eyebrow">How it fits your office</p>
       <h2>Nothing about your phones or software has to change.</h2>
+    </div>
+    <div class="privacy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <b>Patient privacy, by design</b>
+      <p>The receptionist reads your schedule but never writes to it. It keeps only what your front desk needs to call the patient back, and every request travels over encrypted connections.</p>
     </div>
     <ul class="fit">
       <li><b>Keep your number</b><span>Your phones ring first as usual. Missed and after-hours calls roll to the receptionist.</span></li>
